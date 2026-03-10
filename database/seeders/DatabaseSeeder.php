@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('unit_measures')->insertOrIgnore($units);
-
+/*
         $event = Event::factory()->create(['name' => 'Mawazine 2026']);
 
       
@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 
               
             });
-
+     */
         // 4. Admin
         User::factory()->create([
             'name' => 'Admin',
