@@ -1,0 +1,144 @@
+@extends('layouts.admin')
+
+@section('title', 'Dashboard de l\'Événement')
+
+@section('content')
+
+    <div class="max-w-7xl mx-auto px-6">
+
+        {{-- Header & Filtres --}}
+        <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between border-b border-slate-100 pb-8 gap-6">
+            <div>
+                <h1 class="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-none">
+                    {{ $event->name }}
+                </h1>
+            </div>
+
+            {{-- FORMULAIRE FLATPICKR --}}
+            <form method="GET" action="{{ route('admin.events.dashboard', $event) }}" class="flex items-center gap-3">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="datePicker" name="date_range" value="{{ $dateRange ?? '' }}"
+                        placeholder="Période du festival..."
+                        class="pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 shadow-sm focus:ring-2 focus:ring-black cursor-pointer w-64">
+                </div>
+                <button type="submit"
+                    class="px-6 py-3 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200">
+                    Filtrer
+                </button>
+                <a href="{{ route('admin.events.dashboard', $event) }}"
+                    class="px-4 py-3 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-200 transition-colors">
+                    Reset
+                </a>
+            </form>
+        </div>
+
+        {{-- 1. Les 4 KPIs --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+
+            {{-- CA Global (Payment) --}}
+            <div class="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm relative overflow-hidden">
+                <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> CA Global (Dépensé)
+                </h3>
+                <div class="flex items-baseline gap-1.5 mt-2">
+                    <span
+                        class="text-3xl font-black tracking-tighter text-slate-900">{{ number_format($globalRevenue, 2, ',', ' ') }}</span>
+                    <span class="text-xs font-bold text-slate-400">PTS</span>
+                </div>
+                <div class="absolute bottom-0 right-0 w-16 h-16 bg-emerald-50 rounded-tl-full opacity-50"></div>
+            </div>
+
+            {{-- TopUp Global --}}
+            <div class="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm relative overflow-hidden">
+                <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Argent Rechargé
+                </h3>
+                <div class="flex items-baseline gap-1.5 mt-2">
+                    <span
+                        class="text-3xl font-black tracking-tighter text-slate-900">{{ number_format($totalTopUp, 2, ',', ' ') }}</span>
+                    <span class="text-xs font-bold text-slate-400">PTS</span>
+                </div>
+                <div class="absolute bottom-0 right-0 w-16 h-16 bg-blue-50 rounded-tl-full opacity-50"></div>
+            </div>
+
+            {{-- Commandes Totales --}}
+            <div class="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm relative overflow-hidden">
+                <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Commandes</h3>
+                <div class="flex items-baseline gap-1.5 mt-2">
+                    <span class="text-3xl font-black tracking-tighter text-slate-900">{{ $globalOrdersCount }}</span>
+                    <span class="text-xs font-bold text-slate-400">Tickets</span>
+                </div>
+                <div class="absolute bottom-0 right-0 w-16 h-16 bg-purple-50 rounded-tl-full opacity-50"></div>
+            </div>
+
+            {{-- Trésorerie Dormante --}}
+            <div class="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm relative overflow-hidden">
+                <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Trésorerie Dormante
+                </h3>
+                <div class="flex items-baseline gap-1.5 mt-2">
+                    <span
+                        class="text-3xl font-black tracking-tighter text-slate-900">{{ number_format($dormant, 2, ',', ' ') }}</span>
+                    <span class="text-xs font-bold text-slate-400">PTS</span>
+                </div>
+                <div class="absolute bottom-0 right-0 w-16 h-16 bg-amber-50 rounded-tl-full opacity-50"></div>
+            </div>
+
+        </div>
+
+        {{-- 2. Les Graphiques Globaux --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            {{-- Courbe des Flux --}}
+            <div class="bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm">
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">{{ $chartTitle }}</h3>
+                <div class="relative h-72 w-full">
+                    <canvas id="globalSalesChart"></canvas>
+                </div>
+            </div>
+
+            {{-- Classement des Boutiques (Bar Chart Horizontal) --}}
+            <div class="bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm">
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Top 5 Boutiques</h3>
+
+                @if(count($topStoresNames) > 0)
+                    <div class="relative h-72 w-full">
+                        <canvas id="topStoresChart"></canvas>
+                    </div>
+                @else
+                    <div class="h-72 flex flex-col items-center justify-center text-center">
+                        <div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
+                            <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Aucune vente enregistrée sur
+                            le réseau</p>
+                    </div>
+                @endif
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        window.DashboardConfig = {
+            dateRange: @json($dateRange ?? ''),
+            eventStartDate: @json(\Carbon\Carbon::parse($event->start_date)->format('Y-m-d')),
+            eventEndDate: @json(\Carbon\Carbon::parse($event->end_date)->format('Y-m-d')),
+            chartLabels: @json($chartLabels),
+            dataTopUp: @json($chartDataTopUp),
+            dataPayment: @json($chartDataPayment),
+            topStoresNames: @json($topStoresNames),
+            topStoresRevenues: @json($topStoresRevenues)
+        };
+    </script>
+    @vite('resources/js/Admin/events/dashboard.js')
+@endsection
