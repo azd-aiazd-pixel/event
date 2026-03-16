@@ -268,7 +268,7 @@ class AdminDashboardController extends Controller
             $chartDataPayment[] = $dayPayment ? $dayPayment->total : 0;
         }
 
-     //grph2
+     //grph 2
         $topEventsRaw = (clone $txQuery)
             ->where('type', TransactionType::Payment)
             ->selectRaw('event_id, SUM(amount) as total_revenue')
@@ -281,7 +281,7 @@ class AdminDashboardController extends Controller
         $topEventNames = $topEventsRaw->map(fn($tx) => $tx->event->name ?? 'Inconnu')->toArray();
         $topEventRevenues = $topEventsRaw->map(fn($tx) => $tx->total_revenue)->toArray();
 
-        return view('Admin.dashboard', compact(
+        return view('admin.dashboard', compact(
             'startDate', 'endDate', 'dateRange',
             'totalTopUp', 'totalPayment', 'totalRefund', 'dormant', 'activeWristbands',
             'chartLabels', 'chartDataTopUp', 'chartDataPayment',
