@@ -16,7 +16,7 @@
 
 <body class="bg-gray-50 text-gray-900 font-sans antialiased flex flex-col min-h-screen">
 
-    @include('Admin.components.navbar')
+    @include('admin.components.navbar')
 
 
     <main class="container mx-auto pt-20 px-4 sm:px-6 lg:px-8 flex-grow pb-10">

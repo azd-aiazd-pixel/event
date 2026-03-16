@@ -100,7 +100,7 @@ class AdminDashboardController extends Controller
         $topStoresNames = $topStoresRaw->map(fn($store) => $store->name)->toArray();
         $topStoresRevenues = $topStoresRaw->map(fn($store) => $store->total_revenue ?? 0)->toArray();
 
-        return view('Admin.events.dashboard', compact(
+        return view('admin.events.dashboard', compact(
             'event', 'startDate', 'endDate', 'dateRange',
             'globalRevenue', 'totalTopUp', 'dormant', 'globalOrdersCount', 'globalAverageOrder', 'activeStoresCount',
             'chartLabels', 'chartDataTopUp', 'chartDataPayment', 'chartTitle',
@@ -198,7 +198,7 @@ class AdminDashboardController extends Controller
         $topProductsNames = $topProductsRaw->map(fn($item) => $item->product->name)->toArray();
         $topProductsQuantities = $topProductsRaw->map(fn($item) => $item->total_quantity)->toArray();
 
-        return view('Admin.Stores.dashboard', compact(
+        return view('admin.Stores.dashboard', compact(
             'event', 'store', 'startDate', 'endDate', 'dateRange',
             'revenue', 'ordersCount', 'averageOrderValue', 'itemsSold',
             'chartLabels', 'chartData', 'chartTitle',
