@@ -22,7 +22,7 @@
 
 @section('content')
 
-    <div class="max-w-3xl mx-auto mt-8" x-data="{ imagePreview: null, imageFileName: null }">
+    <div class="max-w-3xl mx-auto mt-8">
 
 
         @if ($errors->any())
@@ -84,84 +84,106 @@
                     </div>
 
                     <div class="space-y-6 flex flex-col items-center justify-center py-4">
-    <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest text-center">Logo de la boutique</label>
-    
-    <div class="relative group">
-        <div x-show="imagePreview" class="w-28 h-28 rounded-[2rem] border-4 border-white shadow-2xl overflow-hidden relative transition-transform duration-300 group-hover:scale-105" style="display: none;">
-            <img :src="imagePreview" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-            </div>
-        </div>
+                        <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest text-center">Logo de la
+                            boutique</label>
 
-        <div x-show="!imagePreview" class="w-28 h-28 rounded-[2rem] bg-gray-50 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer group-hover:scale-105">
-            <svg class="w-8 h-8 text-gray-300 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-        </div>
+                        <div class="relative group">
+                            <div id="preview-container"
+                                class="hidden w-28 h-28 rounded-[2rem] border-4 border-white shadow-2xl overflow-hidden relative transition-transform duration-300 group-hover:scale-105">
+                                <img id="image-preview" class="w-full h-full object-cover" />
+                                <div
+                                    class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </div>
+                            </div>
 
-        <input name="logo" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*" 
-               @change="
-                   if ($event.target.files && $event.target.files[0]) {
-                       const reader = new FileReader();
-                       reader.onload = (e) => { imagePreview = e.target.result; };
-                       reader.readAsDataURL($event.target.files[0]);
-                       imageFileName = $event.target.files[0].name;
-                   } else {
-                       imagePreview = null;
-                       imageFileName = null;
-                   }
-               " />
-    </div>
+                            <div id="upload-placeholder"
+                                class="w-28 h-28 rounded-[2rem] bg-gray-50 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer group-hover:scale-105">
+                                <svg class="w-8 h-8 text-gray-300 mb-1" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </div>
 
-    <div class="text-center">
-        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Formats acceptés : JPG, PNG. Max 2Mo.</p>
-        <p x-show="imageFileName" x-text="imageFileName" class="text-[10px] font-black text-blue-600 mt-2 uppercase tracking-tighter" style="display: none;"></p>
-    </div>
-</div>
+                            <input id="logo-upload" name="logo" type="file"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*"
+                                onchange="previewImage(event)" />
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Formats acceptés : JPG,
+                                PNG. Max 2Mo.</p>
+                            <p id="file-name"
+                                class="text-[10px] font-black text-blue-600 mt-2 hidden uppercase tracking-tighter"></p>
+                        </div>
+                    </div>
+
                 </div>
-
                 <button type="submit"
                     class="w-full py-5 bg-gray-900 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 hover:-translate-y-1 transition-all duration-300">
                     Créer la Boutique
                 </button>
             </form>
         </div>
-
     </div>
+@endsection
 
-    <script>
-        $(document).ready(function () {
+@push('scripts')
+    <script type="module">
 
-            var select = $('#userSelect').select2({
-                placeholder: 'RECHERCHER UN VENDEUR...',
-                ajax: {
-                    url: '{{ route("admin.users.search-vendors") }}',
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function (data) {
-                        return {
-                            results: $.map(data, function (item) {
-                                return {
-                                    text: item.name + ' (' + item.email + ')',
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-
-            @if(session('new_user_id'))
-                var newOption = new Option("{{ session('new_user_name') }}", "{{ session('new_user_id') }}", true, true);
-                select.append(newOption).trigger('change');
-            @endif
+        var select = window.$('#userSelect').select2({
+            placeholder: 'RECHERCHER UN VENDEUR...',
+            ajax: {
+                url: '{{ route("admin.users.search-vendors") }}',
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                    return {
+                        results: window.$.map(data, function (item) {
+                            return {
+                                text: item.name + ' (' + item.email + ')',
+                                id: item.id
+                            }
+                        })
+                    };
+                },
+                cache: true
+            }
         });
 
+        @if(session('new_user_id'))
+            var newOption = new Option("{{ session('new_user_name') }}", "{{ session('new_user_id') }}", true, true);
+            select.append(newOption).trigger('change');
+        @endif
 
+        // La fonction pour l'image reste publique
+        window.previewImage = function(event) {
+            const input = event.target;
+            const placeholder = document.getElementById('upload-placeholder');
+            const previewContainer = document.getElementById('preview-container');
+            const previewImage = document.getElementById('image-preview');
+            const fileName = document.getElementById('file-name');
 
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    placeholder.classList.add('hidden');
+                    previewContainer.classList.remove('hidden');
+                    previewImage.src = e.target.result;
+                    fileName.innerText = input.files[0].name;
+                    fileName.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
     </script>
-
+@endpush
+@push('styles')
     <style>
         .select2-container .select2-selection--single {
             height: 64px !important;
@@ -204,5 +226,4 @@
             margin-top: 8px !important;
         }
     </style>
-
-@endsection
+@endpush

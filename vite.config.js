@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
+import inject from '@rollup/plugin-inject';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
     plugins: [
@@ -27,9 +31,19 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    resolve: {
+        alias: {
+            // Force Select2 à utiliser le même jQuery que le reste du projet
+            'jquery': require.resolve('jquery'),
+        }
+    },
+    optimizeDeps: {
+        include: ['jquery', 'select2'],
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
     },
 });
+

@@ -19,11 +19,11 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         if ($user->isAdmin()) {
-            return 'Admin.profile.edit';
+            return 'admin.profile.edit';
         }
 
         if ($user->isStore()) {
-            return 'Store.profile.edit';
+            return 'store.profile.edit';
         }
 
         return 'Participant.profile.edit';

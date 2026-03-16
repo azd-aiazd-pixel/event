@@ -12,6 +12,7 @@
             display: none !important;
         }
     </style>
+    @stack('styles')
 </head>
 
 <body class="bg-gray-50 text-gray-900 font-sans antialiased flex flex-col min-h-screen">
@@ -29,6 +30,7 @@
     </main>
 
     @vite('resources/js/layouts/admin.js')
+    @stack('scripts')
 </body>
 
 </html>
