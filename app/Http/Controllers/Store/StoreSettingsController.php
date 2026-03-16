@@ -13,16 +13,16 @@ class StoreSettingsController extends Controller
 
     public function edit(Store $store)
     {
-       Gate::authorize('view', $store);
+        Gate::authorize('view', $store);
 
-        return view('Store.settings', compact('store'));
+        return view('store.settings', compact('store'));
     }
 
-    // ─── Section Identité (nom + logo) ───────────────────────────────────────
+    // Section Identité (nom + logo) 
 
     public function updateIdentity(Request $request, Store $store)
     {
-      Gate::authorize('view', $store);
+        Gate::authorize('view', $store);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -55,7 +55,7 @@ class StoreSettingsController extends Controller
 
     public function updateWorkflow(Request $request, Store $store)
     {
-       Gate::authorize('view', $store);
+        Gate::authorize('view', $store);
 
         $validated = $request->validate([
             'workflow_type' => ['required', 'in:direct,queue'],
