@@ -54,11 +54,11 @@
         <div class="flex-grow relative overflow-hidden bg-[#F1F5F9]">
 
             <div x-show="currentTab === 'pos'" class="absolute inset-0" x-transition.opacity>
-                @include('Store.terminal.partials.pos')
+                @include('store.terminal.partials.pos')
             </div>
 
             <div x-show="currentTab === 'pickup'" class="absolute inset-0 bg-slate-50" x-transition.opacity x-cloak>
-                @include('Store.terminal.partials.pickup')
+                @include('store.terminal.partials.pickup')
             </div>
 
         </div>
@@ -100,8 +100,8 @@
     <script>
         function terminalHandler() {
             return {
-                
-                currentTab: 'pos', 
+
+                currentTab: 'pos',
 
                 //les etats de la caisse
                 products: @json($products ?? []),
@@ -343,7 +343,7 @@
                         const data = await res.json();
 
                         if (data.success) {
-                            delete this.readyOrders[pId]; 
+                            delete this.readyOrders[pId];
                             this.resetPickupFilter();
                             this.showToast('Commande livrée avec succès !', 'success');
                         } else {

@@ -161,7 +161,7 @@
             select.append(newOption).trigger('change');
         @endif
 
-        // La fonction pour l'image reste publique
+     
         window.previewImage = function(event) {
             const input = event.target;
             const placeholder = document.getElementById('upload-placeholder');
