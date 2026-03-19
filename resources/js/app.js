@@ -6,7 +6,7 @@ import persist from '@alpinejs/persist';
 
 window.Alpine = Alpine;
 Alpine.plugin(persist);
-Alpine.start();
+
 
 
 import jQuery from 'jquery';
@@ -24,3 +24,5 @@ import { French } from "flatpickr/dist/l10n/fr.js";
 import 'flatpickr/dist/flatpickr.min.css';
 window.flatpickr = flatpickr;
 flatpickr.localize(French);
+
+Alpine.start();
