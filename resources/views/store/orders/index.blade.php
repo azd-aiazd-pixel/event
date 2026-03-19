@@ -138,18 +138,23 @@
             </div>
         </div>
     </div>
-
-    <script>
-        flatpickr("#booking_picker", {
-            mode: "range",
-            showMonths: 2,
-            dateFormat: "Y-m-d",
-            altInput: true,
-            altFormat: "j F Y",
-            locale: "fr",
-            maxDate: "today",
-            conjunction: " au ",
-            disableMobile: true
-        });
-    </script>
 @endsection
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.flatpickr !== 'undefined') {
+            flatpickr("#booking_picker", {
+                mode: "range",
+                showMonths: 2,
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "j F Y",
+                locale: "fr",
+                maxDate: "today",
+                conjunction: " au ",
+                disableMobile: true
+            });
+        }
+    });
+</script>
+@endpush
