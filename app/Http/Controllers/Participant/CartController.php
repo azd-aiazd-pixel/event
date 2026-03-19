@@ -15,6 +15,7 @@ use App\Mail\OrderConfirmed;
 use Illuminate\Support\Facades\Mail;
 use App\Events\OrderReadyForPickup;
 use App\Events\NewPendingOrder;
+use App\Models\Participant;
 
 class CartController extends Controller
 {

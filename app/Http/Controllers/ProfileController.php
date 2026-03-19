@@ -26,7 +26,7 @@ class ProfileController extends Controller
             return 'store.profile.edit';
         }
 
-        return 'Participant.profile.edit';
+        return 'participant.profile.edit';
     }
 
     public function edit(Request $request, Store $store = null)
