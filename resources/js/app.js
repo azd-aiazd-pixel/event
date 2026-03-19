@@ -1,14 +1,5 @@
 import './bootstrap';
 
-
-import Alpine from 'alpinejs';
-import persist from '@alpinejs/persist';
-
-window.Alpine = Alpine;
-Alpine.plugin(persist);
-
-
-
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
 
@@ -25,4 +16,15 @@ import 'flatpickr/dist/flatpickr.min.css';
 window.flatpickr = flatpickr;
 flatpickr.localize(French);
 
-Alpine.start();
+// --- ALPINE CONFIGURATION (DOIT ÊTRE À LA FIN) ---
+import Alpine from 'alpinejs';
+import persist from '@alpinejs/persist';
+
+window.Alpine = Alpine;
+Alpine.plugin(persist);
+
+// Le secret est ici : On attend que toute la page et tous les scripts 
+// soient chargés avant de démarrer Alpine.
+document.addEventListener('DOMContentLoaded', () => {
+    Alpine.start();
+});
