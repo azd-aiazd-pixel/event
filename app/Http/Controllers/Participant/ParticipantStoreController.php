@@ -25,7 +25,7 @@ class ParticipantStoreController extends Controller
         ->get();
 
       
-        return view('Participant.stores.index', compact('stores'));
+        return view('participant.stores.index', compact('stores'));
     }
 
 public function show(Store $store)
@@ -52,7 +52,7 @@ public function show(Store $store)
             return in_array($product->id, $wishlistedIds);
         })->values();
        
-        return view('Participant.stores.show', compact('store', 'products', 'categories', 'wishlistedIds'));
+        return view('participant.stores.show', compact('store', 'products', 'categories', 'wishlistedIds'));
     }
 
 }

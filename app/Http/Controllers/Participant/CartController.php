@@ -22,7 +22,7 @@ class CartController extends Controller
     {
         $participant = Auth::user()->participant;
         if (!$participant) abort(403);
-        return view('Participant.cart.index', compact('participant'));
+        return view('participant.cart.index', compact('participant'));
     }
 
   
@@ -55,7 +55,7 @@ public function checkout(Request $request)
             DB::beginTransaction();
 
            
-            $participant = \App\Models\Participant::where('id', $participantSession->id)
+            $participant = Participant::where('id', $participantSession->id)
                                       ->lockForUpdate()
                                       ->first();
 

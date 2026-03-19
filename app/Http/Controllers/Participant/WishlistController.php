@@ -60,6 +60,6 @@ if ($product->store->event_id !== $participant->event_id) {
             return $product->store->name ?? 'Autre';
         });
 
-        return view('Participant.wishlist.index', compact('groupedWishlist'));
+        return view('participant.wishlist.index', compact('groupedWishlist'));
     }
 }

@@ -20,7 +20,7 @@ class OrderController extends Controller
 
         $order->load(['store', 'items.product']);
 
-        return view('Participant.orders.show', compact('order', 'participant'));
+        return view('participant.orders.show', compact('order', 'participant'));
     }
 
     public function index()
@@ -34,6 +34,6 @@ if (!$participant) {
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('Participant.orders.index', compact('orders'));
+        return view('participant.orders.index', compact('orders'));
     }
 }

@@ -105,7 +105,7 @@ class ParticipantDashboardController extends Controller
         $topProductsNames = $topProductsRaw->map(fn($item) => $item->product->name ?? 'Produit Inconnu')->toArray();
         $topProductsQuantities = $topProductsRaw->map(fn($item) => $item->total_quantity)->toArray();
 
-        return view('Participant.dashboard', compact(
+        return view('participant.dashboard', compact(
             'participant',
             'startDate',
             'endDate',
