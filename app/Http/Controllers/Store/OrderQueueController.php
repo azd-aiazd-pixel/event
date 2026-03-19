@@ -14,7 +14,7 @@ class OrderQueueController extends Controller
     public function index(Store $store)
     {
 
-    Gate::authorize('view', $store);
+        Gate::authorize('view', $store);
 
         if ($store->workflow_type !== 'queue') {
             abort(403, 'Ce point de vente fonctionne en mode direct et n\'a pas de file d\'attente.');
@@ -22,7 +22,7 @@ class OrderQueueController extends Controller
 
         $pendingOrders = Order::where('store_id', $store->id)
             ->where('status', 'pending')
-            ->with('items.product') 
+            ->with('items.product')
             ->oldest()
             ->get();
 
@@ -31,23 +31,32 @@ class OrderQueueController extends Controller
 
 
 
-   public function complete(Request $request, Order $order)
-    {  
-      
-    Gate::authorize('update', $order);
-    
-       $order->update(['status' => 'ready']);
+    public function complete(Request $request, Order $order)
+    {
 
-       OrderReadyForPickup::dispatch($order);
+        Gate::authorize('update', $order);
 
-       if ($request->wantsJson() || $request->ajax()) {
-           return response()->json(['success' => true]);
-       }
-       return back()->with('success', "Commande #{$order->id} prête !");
+        if ($order->status === 'rejected') {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Impossible : cette commande a déjà été annulée.'], 403);
+            }
+            return back()->with('error', 'Impossible : cette commande a déjà été annulée.');
+        }
+
+
+
+        $order->update(['status' => 'ready']);
+
+        OrderReadyForPickup::dispatch($order);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+        return back()->with('success', "Commande #{$order->id} prête !");
     }
 
 
-      public function cancel(Request $request, Order $order)
+    public function cancel(Request $request, Order $order)
     {
         Gate::authorize('update', $order);
 
