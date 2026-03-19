@@ -50,7 +50,7 @@ class AdminDashboardController extends Controller
         
         $activeStoresCount = Store::where('event_id', $event->id)->where('status', 'active')->count();
 
-//graph1
+//graph 1
         $diffInDays = $startDate->diffInDays($endDate);
         $chartLabels = [];
         $chartDataTopUp = [];
@@ -198,7 +198,7 @@ class AdminDashboardController extends Controller
         $topProductsNames = $topProductsRaw->map(fn($item) => $item->product->name)->toArray();
         $topProductsQuantities = $topProductsRaw->map(fn($item) => $item->total_quantity)->toArray();
 
-        return view('admin.Stores.dashboard', compact(
+        return view('admin.stores.dashboard', compact(
             'event', 'store', 'startDate', 'endDate', 'dateRange',
             'revenue', 'ordersCount', 'averageOrderValue', 'itemsSold',
             'chartLabels', 'chartData', 'chartTitle',
