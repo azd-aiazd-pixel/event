@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\OrderItem;
 use App\Enum\TransactionType;
+use App\Enum\OrderStatus;
 class AdminDashboardController extends Controller
 { //a
    public function eventDashboard(Request $request, Event $event)
@@ -90,7 +91,7 @@ class AdminDashboardController extends Controller
         // graph 2 
         $topStoresRaw = Store::where('event_id', $event->id)
             ->withSum(['orders as total_revenue' => function($q) use ($startDate, $endDate) {
-                $q->where('status', 'completed')
+                $q->where('status', OrderStatus::Completed)
                   ->whereBetween('created_at', [$startDate, $endDate]);
             }], 'total_points')
             ->orderByDesc('total_revenue')
@@ -136,7 +137,7 @@ class AdminDashboardController extends Controller
 
         $completedOrders = $store->orders()
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'completed');
+            ->where('status', OrderStatus::Completed);
 
         $revenue = $completedOrders->sum('total_points');
         $ordersCount = $completedOrders->count();
@@ -145,7 +146,7 @@ class AdminDashboardController extends Controller
         $itemsSold = OrderItem::whereHas('order', function($q) use ($store, $startDate, $endDate) {
             $q->where('store_id', $store->id)
               ->whereBetween('created_at', [$startDate, $endDate])
-              ->where('status', 'completed');
+              ->where('status', OrderStatus::Completed);
         })->sum('quantity');
 
        //graph1
@@ -186,7 +187,7 @@ class AdminDashboardController extends Controller
         $topProductsRaw = OrderItem::whereHas('order', function($q) use ($store, $startDate, $endDate) {
                 $q->where('store_id', $store->id)
                   ->whereBetween('created_at', [$startDate, $endDate])
-                  ->where('status', 'completed');
+                  ->where('status', OrderStatus::Completed);
             })
             ->selectRaw('product_id, SUM(quantity) as total_quantity')
             ->groupBy('product_id')

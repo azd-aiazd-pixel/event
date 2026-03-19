@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Store;
 
 
 use App\Http\Controllers\Controller;
+use App\Enum\OrderStatus;
 use App\Models\{Store, Order, Participant};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,7 @@ class OrderQueueController extends Controller
         }
 
         $pendingOrders = Order::where('store_id', $store->id)
-            ->where('status', 'pending')
+            ->where('status', OrderStatus::Pending)
             ->with('items.product')
             ->oldest()
             ->get();
@@ -36,7 +37,7 @@ class OrderQueueController extends Controller
 
         Gate::authorize('update', $order);
 
-        if ($order->status === 'rejected') {
+        if ($order->status === OrderStatus::Rejected) {
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json(['success' => false, 'message' => 'Impossible : cette commande a déjà été annulée.'], 403);
             }
@@ -45,7 +46,7 @@ class OrderQueueController extends Controller
 
 
 
-        $order->update(['status' => 'ready']);
+        $order->update(['status' => OrderStatus::Ready]);
 
         OrderReadyForPickup::dispatch($order);
 
@@ -67,7 +68,7 @@ class OrderQueueController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                if ($freshOrder->status === 'rejected') {
+                if ($freshOrder->status === OrderStatus::Rejected) {
                     throw new \Exception('ALREADY_CANCELLED');
                 }
 
@@ -85,7 +86,7 @@ class OrderQueueController extends Controller
                     }
                 }
 
-                $freshOrder->update(['status' => 'rejected']);
+                $freshOrder->update(['status' => OrderStatus::Rejected]);
             });
 
             OrderCancelled::dispatch($order->fresh());

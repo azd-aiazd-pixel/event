@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Enum\TransactionType;
+use App\Enum\OrderStatus;
 use Illuminate\Support\Facades\Gate;
 class RefundController extends Controller
 {
@@ -41,7 +42,7 @@ class RefundController extends Controller
         $orders = Order::with('items.product')
             ->where('participant_id', $participant->id)
             ->where('store_id', $store->id)
-            ->where('status', 'completed')
+            ->where('status', OrderStatus::Completed)
             ->orderBy('updated_at', 'desc')
             ->get();
 
@@ -66,7 +67,7 @@ class RefundController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if ($order->status !== 'completed') {
+            if ($order->status !== OrderStatus::Completed) {
                 throw new \Exception("Seules les commandes complétées peuvent être remboursées.");
             }
 
@@ -77,7 +78,7 @@ class RefundController extends Controller
             $participant->balance += $order->total_points;
             $participant->save();
 
-            $order->status = 'rejected';
+            $order->status = OrderStatus::Rejected;
             $order->save();
 
             Transaction::create([

@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\Transaction;
 use App\Enum\TransactionType; 
+use App\Enum\OrderStatus;
 use App\Mail\OrderConfirmed;
 use Illuminate\Support\Facades\Mail;
 use App\Events\OrderReadyForPickup;
@@ -111,7 +112,7 @@ public function checkout(Request $request)
             $participant->reserved_balance += $totalAmount;
             $participant->save();
             
-            $orderStatus = $store->isQueue() ? 'pending' : 'ready';
+            $orderStatus = $store->isQueue() ? OrderStatus::Pending : OrderStatus::Ready;
 
             $order = Order::create([
                 'participant_id' => $participant->id,

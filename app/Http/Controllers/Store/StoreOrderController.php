@@ -9,6 +9,7 @@ use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use App\Enum\OrderStatus;
 class StoreOrderController extends Controller
 {
 
@@ -39,7 +40,7 @@ class StoreOrderController extends Controller
 
         //query de calcule pour chaque jour
         $dailyTotals = (clone $query)
-            ->where('status', 'completed')
+            ->where('status', OrderStatus::Completed)
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_points) as total'))
             ->groupBy('date')
             ->pluck('total', 'date');

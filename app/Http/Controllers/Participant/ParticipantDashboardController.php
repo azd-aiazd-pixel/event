@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Order;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use App\Enum\OrderStatus;
 
 class ParticipantDashboardController extends Controller
 {
@@ -42,7 +43,7 @@ class ParticipantDashboardController extends Controller
         // Get completed orders for the current participant within the date range
         $completedOrders = $participant->orders()
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'completed');
+            ->where('status', OrderStatus::Completed);
 
         // KPIs
         $currentBalance = $participant->balance;
@@ -52,7 +53,7 @@ class ParticipantDashboardController extends Controller
         $itemsPurchased = OrderItem::whereHas('order', function ($q) use ($participant, $startDate, $endDate) {
             $q->where('participant_id', $participant->id)
                 ->whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', 'completed');
+                ->where('status', OrderStatus::Completed);
         })->sum('quantity');
 
         // Preparing data for the line chart (spending over time)
@@ -93,7 +94,7 @@ class ParticipantDashboardController extends Controller
         $topProductsRaw = OrderItem::whereHas('order', function ($q) use ($participant, $startDate, $endDate) {
             $q->where('participant_id', $participant->id)
                 ->whereBetween('created_at', [$startDate, $endDate])
-                ->where('status', 'completed');
+                ->where('status', OrderStatus::Completed);
         })
             ->selectRaw('product_id, SUM(quantity) as total_quantity')
             ->groupBy('product_id')

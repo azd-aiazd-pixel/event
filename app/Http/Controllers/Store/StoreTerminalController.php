@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 use App\Http\Controllers\Controller;
 use App\Models\{Store, Participant, Product, Order, OrderItem, Transaction,Category};
 use App\Enum\TransactionType;
+use App\Enum\OrderStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Events\NewPendingOrder;
@@ -25,7 +26,7 @@ public function index(Store $store)
         })->get();
 
        $readyOrders = Order::where('store_id', $store->id)
-            ->where('status', 'ready')
+            ->where('status', OrderStatus::Ready)
             ->with('items.product')
             ->latest()
             ->get()
@@ -121,7 +122,7 @@ public function index(Store $store)
                     'store_id' => $store->id,
                     'participant_id' => $participant->id,
                     'total_points' => $totalOrder,
-                    'status' => $isQueue ? 'pending' : 'completed',
+                    'status' => $isQueue ? OrderStatus::Pending : OrderStatus::Completed,
                 ]);
 
                 foreach ($itemsToCreate as $data) {
@@ -189,7 +190,7 @@ public function scanForPickup(Request $request, Store $store)
         // On récupère les commandes de ce participant pour CE store qui sont "ready"
         $orders = Order::where('store_id', $store->id)
             ->where('participant_id', $participant->id)
-            ->where('status', 'ready')
+            ->where('status', OrderStatus::Ready)
             ->with('items.product')
             ->get();
 
@@ -223,7 +224,7 @@ public function markAsCollected(Request $request, Store $store)
               
                 $orders = Order::whereIn('id', $request->order_ids)
                     ->where('store_id', $store->id)
-                    ->where('status', 'ready')
+                    ->where('status', OrderStatus::Ready)
                     ->get();
 
                 if ($orders->isEmpty()) {
@@ -259,7 +260,7 @@ public function markAsCollected(Request $request, Store $store)
                             'type'           => TransactionType::Payment,
                         ]);
 
-                        $order->update(['status' => 'completed']);
+                        $order->update(['status' => OrderStatus::Completed]);
                     }
                 }
             });

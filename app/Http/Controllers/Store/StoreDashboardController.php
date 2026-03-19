@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Gate;
+use App\Enum\OrderStatus;
 class StoreDashboardController extends Controller
 {
    //la page d acceuil avec les differents store ducompte
@@ -56,7 +57,7 @@ public function dashboard(Request $request, Store $store)
       
         $completedOrders = $store->orders()
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'completed');
+            ->where('status', OrderStatus::Completed);
             
     
         $revenue = $completedOrders->sum('total_points');
@@ -68,7 +69,7 @@ public function dashboard(Request $request, Store $store)
         $itemsSold = OrderItem::whereHas('order', function($q) use ($store, $startDate, $endDate) {
             $q->where('store_id', $store->id)
               ->whereBetween('created_at', [$startDate, $endDate])
-              ->where('status', 'completed');
+              ->where('status', OrderStatus::Completed);
         })->sum('quantity');
 
        
@@ -116,7 +117,7 @@ public function dashboard(Request $request, Store $store)
         $topProductsRaw = OrderItem::whereHas('order', function($q) use ($store, $startDate, $endDate) {
                 $q->where('store_id', $store->id)
                   ->whereBetween('created_at', [$startDate, $endDate])
-                  ->where('status', 'completed');
+                  ->where('status', OrderStatus::Completed);
             })
             ->selectRaw('product_id, SUM(quantity) as total_quantity')
             ->groupBy('product_id')

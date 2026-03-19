@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -12,6 +13,10 @@ class Order extends Model
         'participant_id',
         'total_points',
         'status',
+    ];
+
+    protected $casts = [
+        'status' => OrderStatus::class,
     ];
 
     public function store()
