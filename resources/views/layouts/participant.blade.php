@@ -55,7 +55,7 @@
         @yield('content')
     </main>
 
-    @include('Participant.components.bottom_nav')
+    @include('participant.components.bottom_nav')
 
     @vite('resources/js/layouts/participant.js')
 
